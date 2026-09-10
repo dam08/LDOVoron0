@@ -8,10 +8,12 @@
     SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
 ### Buse au centre du plateau
     G28
+## Premier reglage du Z-Offset
+    Z_ENDSTOP_CALIBRATE
 ### Ajustement des vis du plateau
     BED_SCREWS_ADJUST
 
-## Z-Offset
+## Second ajustement du Z-Offset
     Z_ENDSTOP_CALIBRATE
 ### Ajustement avec une feuille de papier
     TESTZ Z=-0.1
