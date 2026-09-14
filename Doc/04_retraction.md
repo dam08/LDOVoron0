@@ -1,5 +1,8 @@
 # Retraction
-**OrcaSlicer**
+## OrcaSlicer
+1) Edition de l'imprimante
+2) Onglet Extruder
+3) Cochez la case Rétraction par le firmware (Use firmware retraction)
 ## Rappel des parametres dans 05_settings.cfg
     [firmware_retraction]
     retract_length: 0.5
