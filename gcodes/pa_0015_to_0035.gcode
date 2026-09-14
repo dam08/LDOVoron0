@@ -1,0 +1,2840 @@
+
+; ### Ellis' Pressure Advance / Linear Advance Calibration Tool ###
+;
+; Original Marlin linear advance calibration tool by Sineos [https://github.com/Sineos]
+; Heavily modified/rewritten by Andrew Ellis [https://github.com/AndrewEllis93]
+;
+; -------------------------------------------
+; Generated: Sun Sep 13 2026 23:12:39 GMT+0200 (heure d’été d’Europe centrale)
+; -------------------------------------------
+;
+; Advanced Mode: false
+;
+; Printer:
+;  - Firmware: klipper
+;  - Bed Shape: Rect
+;  - Bed Size X: 120 mm
+;  - Bed Size Y: 120 mm
+;  - Origin Bed Center: false
+;  - Travel Speed: 120 mm/s
+;  - Nozzle Diameter: 0.4 mm
+;  - Filament Diameter: 1.75 mm
+;  - Extrusion Multiplier: 0.98
+;
+; Retraction / Z Hop:
+;  - Retraction Distance: 0.2 mm
+;  - Retract Speed: 35 mm/s
+;  - Unretract Speed: 30 mm/s
+;  - Z Hop Enable: true
+;  - Z Hop Height: 0.1mm
+;
+; First Layer Settings:
+;  - First Layer Height: 0.25 mm
+;  - First Layer Printing Speed: 30 mm/s
+;  - First Layer Fan Speed: 0%
+;  - Anchor Option: anchor_frame
+;
+; Print Settings:
+;  - Layer Height: 0.2 mm
+;  - Print Speed: 100 mm/s
+;  - Acceleration: Disabled
+;  - Fan Speed: 30%
+;
+; Pressure Advance Stepping:
+;  - PA Start Value: 0.015
+;  - PA End Value: 0.035
+;  - PA Increment: 0.001
+;
+; Start / End G-code:
+;  - Hotend Temp: 260C
+;  - Bed Temp: 105C
+;  - Don't Add G28: true
+;  - Don't Add Heating G-Codes: true
+;  - Entered Start G-code: 
+;       M190 S105
+;       M109 S260
+;       PRINT_START EXTRUDER=260 BED=105
+;       ; You can use following code instead if your PRINT_START macro support Chamber and print area bedmesh
+;       ; PRINT_START EXTRUDER=260 BED=105 Chamber=0 PRINT_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} PRINT_MAX={first_layer_print_max[0]},{first_layer_print_max[1]}
+;  - Entered End G-code: 
+;       PRINT_END ; End macro. Change name to match yours
+;
+; Calculated Values:
+;  - Print Size X: 99.12 mm
+;  - Print Size Y: 56.99 mm
+;  - Number of Patterns to Print: 21
+;  - PA Values: 0.015, 0.016, 0.017, 0.018, 0.019, 0.02, 0.021, 0.022, 0.023, 0.024, 0.025, 0.026, 0.027, 0.028, 0.029, 0.03, 0.031, 0.032, 0.033, 0.034, 0.035
+;
+; Prepare printing
+;
+M190 S105
+M109 S260
+PRINT_START EXTRUDER=260 BED=105
+; You can use following code instead if your PRINT_START macro support Chamber and print area bedmesh
+; PRINT_START EXTRUDER=260 BED=105 Chamber=0 PRINT_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} PRINT_MAX={first_layer_print_max[0]},{first_layer_print_max[1]}
+G21 ; Millimeter units
+G90 ; Absolute XYZ
+M83 ; Relative E
+G92 E0 ; Reset extruder distance
+;
+;  Begin printing
+;
+M106 S0 ; Set fan speed
+G1 E-0.2 F2100 ; Retract
+G0 Z5 F7200 ; Z raise
+G0 X10.4389 Y31.5068 F7200 ; Move to start position
+G0 Z0.25 F7200 ; Move to start layer height
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance to start value
+M117 PA 0.015
+G1 X10.4389 Y73.9332 E2.1882 F1800 ; Draw perimeter (up)
+G1 X109.5611 Y73.9332 E5.11236 F1800 ; Draw perimeter (right)
+G1 X109.5611 Y31.5068 E2.1882 F1800 ; Draw perimeter (down)
+G1 X10.4389 Y31.5068 E5.11236 F1800 ; Draw perimeter (left)
+G0 X10.9452 Y32.0131 F7200 ; Step inwards to print next perimeter
+G1 X10.9452 Y73.4269 E2.13597 F1800 ; Draw perimeter (up)
+G1 X109.0548 Y73.4269 E5.06013 F1800 ; Draw perimeter (right)
+G1 X109.0548 Y32.0131 E2.13597 F1800 ; Draw perimeter (down)
+G1 X10.9452 Y32.0131 E5.06013 F1800 ; Draw perimeter (left)
+G0 X11.4516 Y32.5195 F7200 ; Step inwards to print next perimeter
+G1 X11.4516 Y72.9205 E2.08374 F1800 ; Draw perimeter (up)
+G1 X108.5484 Y72.9205 E5.0079 F1800 ; Draw perimeter (right)
+G1 X108.5484 Y32.5195 E2.08374 F1800 ; Draw perimeter (down)
+G1 X11.4516 Y32.5195 E5.0079 F1800 ; Draw perimeter (left)
+G0 X11.9579 Y33.0258 F7200 ; Step inwards to print next perimeter
+G1 X11.9579 Y72.4142 E2.0315 F1800 ; Draw perimeter (up)
+G1 X108.0421 Y72.4142 E4.95567 F1800 ; Draw perimeter (right)
+G1 X108.0421 Y33.0258 E2.0315 F1800 ; Draw perimeter (down)
+G1 X11.9579 Y33.0258 E4.95567 F1800 ; Draw perimeter (left)
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X10.4389 Y74.4396 F7200 ; Move to box start
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X10.4389 Y88.9459 E0.74818 F1800 ; Draw perimeter (up)
+G1 X89.099 Y88.9459 E4.057 F1800 ; Draw perimeter (right)
+G1 X89.099 Y74.4396 E0.74818 F1800 ; Draw perimeter (down)
+G1 X10.4389 Y74.4396 E4.057 F1800 ; Draw perimeter (left)
+G0 X10.9452 Y74.9459 F7200 ; Step inwards to print next perimeter
+G1 X10.9452 Y88.4396 E0.69595 F1800 ; Draw perimeter (up)
+G1 X88.5926 Y88.4396 E4.00477 F1800 ; Draw perimeter (right)
+G1 X88.5926 Y74.9459 E0.69595 F1800 ; Draw perimeter (down)
+G1 X10.9452 Y74.9459 E4.00477 F1800 ; Draw perimeter (left)
+G0 X11.4516 Y75.4523 F7200 ; Step inwards to print next perimeter
+G1 X11.4516 Y87.9332 E0.64372 F1800 ; Draw perimeter (up)
+G1 X88.0863 Y87.9332 E3.95254 F1800 ; Draw perimeter (right)
+G1 X88.0863 Y75.4523 E0.64372 F1800 ; Draw perimeter (down)
+G1 X11.4516 Y75.4523 E3.95254 F1800 ; Draw perimeter (left)
+G0 X11.9579 Y75.9586 F7200 ; Step inwards to print next perimeter
+G1 X11.9579 Y87.4269 E0.59149 F1800 ; Draw perimeter (up)
+G1 X87.5799 Y87.4269 E3.9003 F1800 ; Draw perimeter (right)
+G1 X87.5799 Y75.9586 E0.59149 F1800 ; Draw perimeter (down)
+G1 X11.9579 Y75.9586 E3.9003 F1800 ; Draw perimeter (left)
+G0 X12.3313 Y76.3319 F7200 ; Move to fill start
+G0 X13.0474 Y76.3319 F7200 ; Move
+G1 X12.3313 Y77.048 E0.05223 F1800 ; Fill
+G0 X12.3313 Y77.7641 F7200 ; Move
+G1 X13.7635 Y76.3319 E0.10446 F1800 ; Fill
+G0 X14.4795 Y76.3319 F7200 ; Move
+G1 X12.3313 Y78.4802 E0.15669 F1800 ; Fill
+G0 X12.3313 Y79.1963 F7200 ; Move
+G1 X15.1956 Y76.3319 E0.20893 F1800 ; Fill
+G0 X15.9117 Y76.3319 F7200 ; Move
+G1 X12.3313 Y79.9124 E0.26116 F1800 ; Fill
+G0 X12.3313 Y80.6285 F7200 ; Move
+G1 X16.6278 Y76.3319 E0.31339 F1800 ; Fill
+G0 X17.3439 Y76.3319 F7200 ; Move
+G1 X12.3313 Y81.3445 E0.36562 F1800 ; Fill
+G0 X12.3313 Y82.0606 F7200 ; Move
+G1 X18.06 Y76.3319 E0.41785 F1800 ; Fill
+G0 X18.7761 Y76.3319 F7200 ; Move
+G1 X12.3313 Y82.7767 E0.47008 F1800 ; Fill
+G0 X12.3313 Y83.4928 F7200 ; Move
+G1 X19.4921 Y76.3319 E0.52231 F1800 ; Fill
+G0 X20.2082 Y76.3319 F7200 ; Move
+G1 X12.3313 Y84.2089 E0.57454 F1800 ; Fill
+G0 X12.3313 Y84.925 F7200 ; Move
+G1 X20.9243 Y76.3319 E0.62678 F1800 ; Fill
+G0 X21.6404 Y76.3319 F7200 ; Move
+G1 X12.3313 Y85.6411 E0.67901 F1800 ; Fill
+G0 X12.3313 Y86.3571 F7200 ; Move
+G1 X22.3565 Y76.3319 E0.73124 F1800 ; Fill
+G0 X23.0726 Y76.3319 F7200 ; Move
+G1 X12.351 Y87.0535 E0.78203 F1800 ; Fill
+G0 X13.0671 Y87.0535 F7200 ; Move
+G1 X23.7887 Y76.3319 E0.78203 F1800 ; Fill
+G0 X24.5048 Y76.3319 F7200 ; Move
+G1 X13.7832 Y87.0535 E0.78203 F1800 ; Fill
+G0 X14.4993 Y87.0535 F7200 ; Move
+G1 X25.2208 Y76.3319 E0.78203 F1800 ; Fill
+G0 X25.9369 Y76.3319 F7200 ; Move
+G1 X15.2153 Y87.0535 E0.78203 F1800 ; Fill
+G0 X15.9314 Y87.0535 F7200 ; Move
+G1 X26.653 Y76.3319 E0.78203 F1800 ; Fill
+G0 X27.3691 Y76.3319 F7200 ; Move
+G1 X16.6475 Y87.0535 E0.78203 F1800 ; Fill
+G0 X17.3636 Y87.0535 F7200 ; Move
+G1 X28.0852 Y76.3319 E0.78203 F1800 ; Fill
+G0 X28.8013 Y76.3319 F7200 ; Move
+G1 X18.0797 Y87.0535 E0.78203 F1800 ; Fill
+G0 X18.7958 Y87.0535 F7200 ; Move
+G1 X29.5174 Y76.3319 E0.78203 F1800 ; Fill
+G0 X30.2334 Y76.3319 F7200 ; Move
+G1 X19.5119 Y87.0535 E0.78203 F1800 ; Fill
+G0 X20.2279 Y87.0535 F7200 ; Move
+G1 X30.9495 Y76.3319 E0.78203 F1800 ; Fill
+G0 X31.6656 Y76.3319 F7200 ; Move
+G1 X20.944 Y87.0535 E0.78203 F1800 ; Fill
+G0 X21.6601 Y87.0535 F7200 ; Move
+G1 X32.3817 Y76.3319 E0.78203 F1800 ; Fill
+G0 X33.0978 Y76.3319 F7200 ; Move
+G1 X22.3762 Y87.0535 E0.78203 F1800 ; Fill
+G0 X23.0923 Y87.0535 F7200 ; Move
+G1 X33.8139 Y76.3319 E0.78203 F1800 ; Fill
+G0 X34.53 Y76.3319 F7200 ; Move
+G1 X23.8084 Y87.0535 E0.78203 F1800 ; Fill
+G0 X24.5245 Y87.0535 F7200 ; Move
+G1 X35.246 Y76.3319 E0.78203 F1800 ; Fill
+G0 X35.9621 Y76.3319 F7200 ; Move
+G1 X25.2405 Y87.0535 E0.78203 F1800 ; Fill
+G0 X25.9566 Y87.0535 F7200 ; Move
+G1 X36.6782 Y76.3319 E0.78203 F1800 ; Fill
+G0 X37.3943 Y76.3319 F7200 ; Move
+G1 X26.6727 Y87.0535 E0.78203 F1800 ; Fill
+G0 X27.3888 Y87.0535 F7200 ; Move
+G1 X38.1104 Y76.3319 E0.78203 F1800 ; Fill
+G0 X38.8265 Y76.3319 F7200 ; Move
+G1 X28.1049 Y87.0535 E0.78203 F1800 ; Fill
+G0 X28.821 Y87.0535 F7200 ; Move
+G1 X39.5426 Y76.3319 E0.78203 F1800 ; Fill
+G0 X40.2587 Y76.3319 F7200 ; Move
+G1 X29.5371 Y87.0535 E0.78203 F1800 ; Fill
+G0 X30.2532 Y87.0535 F7200 ; Move
+G1 X40.9747 Y76.3319 E0.78203 F1800 ; Fill
+G0 X41.6908 Y76.3319 F7200 ; Move
+G1 X30.9692 Y87.0535 E0.78203 F1800 ; Fill
+G0 X31.6853 Y87.0535 F7200 ; Move
+G1 X42.4069 Y76.3319 E0.78203 F1800 ; Fill
+G0 X43.123 Y76.3319 F7200 ; Move
+G1 X32.4014 Y87.0535 E0.78203 F1800 ; Fill
+G0 X33.1175 Y87.0535 F7200 ; Move
+G1 X43.8391 Y76.3319 E0.78203 F1800 ; Fill
+G0 X44.5552 Y76.3319 F7200 ; Move
+G1 X33.8336 Y87.0535 E0.78203 F1800 ; Fill
+G0 X34.5497 Y87.0535 F7200 ; Move
+G1 X45.2713 Y76.3319 E0.78203 F1800 ; Fill
+G0 X45.9873 Y76.3319 F7200 ; Move
+G1 X35.2658 Y87.0535 E0.78203 F1800 ; Fill
+G0 X35.9818 Y87.0535 F7200 ; Move
+G1 X46.7034 Y76.3319 E0.78203 F1800 ; Fill
+G0 X47.4195 Y76.3319 F7200 ; Move
+G1 X36.6979 Y87.0535 E0.78203 F1800 ; Fill
+G0 X37.414 Y87.0535 F7200 ; Move
+G1 X48.1356 Y76.3319 E0.78203 F1800 ; Fill
+G0 X48.8517 Y76.3319 F7200 ; Move
+G1 X38.1301 Y87.0535 E0.78203 F1800 ; Fill
+G0 X38.8462 Y87.0535 F7200 ; Move
+G1 X49.5678 Y76.3319 E0.78203 F1800 ; Fill
+G0 X50.2839 Y76.3319 F7200 ; Move
+G1 X39.5623 Y87.0535 E0.78203 F1800 ; Fill
+G0 X40.2784 Y87.0535 F7200 ; Move
+G1 X50.9999 Y76.3319 E0.78203 F1800 ; Fill
+G0 X51.716 Y76.3319 F7200 ; Move
+G1 X40.9944 Y87.0535 E0.78203 F1800 ; Fill
+G0 X41.7105 Y87.0535 F7200 ; Move
+G1 X52.4321 Y76.3319 E0.78203 F1800 ; Fill
+G0 X53.1482 Y76.3319 F7200 ; Move
+G1 X42.4266 Y87.0535 E0.78203 F1800 ; Fill
+G0 X43.1427 Y87.0535 F7200 ; Move
+G1 X53.8643 Y76.3319 E0.78203 F1800 ; Fill
+G0 X54.5804 Y76.3319 F7200 ; Move
+G1 X43.8588 Y87.0535 E0.78203 F1800 ; Fill
+G0 X44.5749 Y87.0535 F7200 ; Move
+G1 X55.2965 Y76.3319 E0.78203 F1800 ; Fill
+G0 X56.0126 Y76.3319 F7200 ; Move
+G1 X45.291 Y87.0535 E0.78203 F1800 ; Fill
+G0 X46.0071 Y87.0535 F7200 ; Move
+G1 X56.7286 Y76.3319 E0.78203 F1800 ; Fill
+G0 X57.4447 Y76.3319 F7200 ; Move
+G1 X46.7231 Y87.0535 E0.78203 F1800 ; Fill
+G0 X47.4392 Y87.0535 F7200 ; Move
+G1 X58.1608 Y76.3319 E0.78203 F1800 ; Fill
+G0 X58.8769 Y76.3319 F7200 ; Move
+G1 X48.1553 Y87.0535 E0.78203 F1800 ; Fill
+G0 X48.8714 Y87.0535 F7200 ; Move
+G1 X59.593 Y76.3319 E0.78203 F1800 ; Fill
+G0 X60.3091 Y76.3319 F7200 ; Move
+G1 X49.5875 Y87.0535 E0.78203 F1800 ; Fill
+G0 X50.3036 Y87.0535 F7200 ; Move
+G1 X61.0252 Y76.3319 E0.78203 F1800 ; Fill
+G0 X61.7412 Y76.3319 F7200 ; Move
+G1 X51.0197 Y87.0535 E0.78203 F1800 ; Fill
+G0 X51.7357 Y87.0535 F7200 ; Move
+G1 X62.4573 Y76.3319 E0.78203 F1800 ; Fill
+G0 X63.1734 Y76.3319 F7200 ; Move
+G1 X52.4518 Y87.0535 E0.78203 F1800 ; Fill
+G0 X53.1679 Y87.0535 F7200 ; Move
+G1 X63.8895 Y76.3319 E0.78203 F1800 ; Fill
+G0 X64.6056 Y76.3319 F7200 ; Move
+G1 X53.884 Y87.0535 E0.78203 F1800 ; Fill
+G0 X54.6001 Y87.0535 F7200 ; Move
+G1 X65.3217 Y76.3319 E0.78203 F1800 ; Fill
+G0 X66.0378 Y76.3319 F7200 ; Move
+G1 X55.3162 Y87.0535 E0.78203 F1800 ; Fill
+G0 X56.0323 Y87.0535 F7200 ; Move
+G1 X66.7538 Y76.3319 E0.78203 F1800 ; Fill
+G0 X67.4699 Y76.3319 F7200 ; Move
+G1 X56.7483 Y87.0535 E0.78203 F1800 ; Fill
+G0 X57.4644 Y87.0535 F7200 ; Move
+G1 X68.186 Y76.3319 E0.78203 F1800 ; Fill
+G0 X68.9021 Y76.3319 F7200 ; Move
+G1 X58.1805 Y87.0535 E0.78203 F1800 ; Fill
+G0 X58.8966 Y87.0535 F7200 ; Move
+G1 X69.6182 Y76.3319 E0.78203 F1800 ; Fill
+G0 X70.3343 Y76.3319 F7200 ; Move
+G1 X59.6127 Y87.0535 E0.78203 F1800 ; Fill
+G0 X60.3288 Y87.0535 F7200 ; Move
+G1 X71.0504 Y76.3319 E0.78203 F1800 ; Fill
+G0 X71.7665 Y76.3319 F7200 ; Move
+G1 X61.0449 Y87.0535 E0.78203 F1800 ; Fill
+G0 X61.761 Y87.0535 F7200 ; Move
+G1 X72.4825 Y76.3319 E0.78203 F1800 ; Fill
+G0 X73.1986 Y76.3319 F7200 ; Move
+G1 X62.477 Y87.0535 E0.78203 F1800 ; Fill
+G0 X63.1931 Y87.0535 F7200 ; Move
+G1 X73.9147 Y76.3319 E0.78203 F1800 ; Fill
+G0 X74.6308 Y76.3319 F7200 ; Move
+G1 X63.9092 Y87.0535 E0.78203 F1800 ; Fill
+G0 X64.6253 Y87.0535 F7200 ; Move
+G1 X75.3469 Y76.3319 E0.78203 F1800 ; Fill
+G0 X76.063 Y76.3319 F7200 ; Move
+G1 X65.3414 Y87.0535 E0.78203 F1800 ; Fill
+G0 X66.0575 Y87.0535 F7200 ; Move
+G1 X76.7791 Y76.3319 E0.78203 F1800 ; Fill
+G0 X77.4951 Y76.3319 F7200 ; Move
+G1 X66.7736 Y87.0535 E0.78203 F1800 ; Fill
+G0 X67.4896 Y87.0535 F7200 ; Move
+G1 X78.2112 Y76.3319 E0.78203 F1800 ; Fill
+G0 X78.9273 Y76.3319 F7200 ; Move
+G1 X68.2057 Y87.0535 E0.78203 F1800 ; Fill
+G0 X68.9218 Y87.0535 F7200 ; Move
+G1 X79.6434 Y76.3319 E0.78203 F1800 ; Fill
+G0 X80.3595 Y76.3319 F7200 ; Move
+G1 X69.6379 Y87.0535 E0.78203 F1800 ; Fill
+G0 X70.354 Y87.0535 F7200 ; Move
+G1 X81.0756 Y76.3319 E0.78203 F1800 ; Fill
+G0 X81.7917 Y76.3319 F7200 ; Move
+G1 X71.0701 Y87.0535 E0.78203 F1800 ; Fill
+G0 X71.7862 Y87.0535 F7200 ; Move
+G1 X82.5077 Y76.3319 E0.78203 F1800 ; Fill
+G0 X83.2238 Y76.3319 F7200 ; Move
+G1 X72.5022 Y87.0535 E0.78203 F1800 ; Fill
+G0 X73.2183 Y87.0535 F7200 ; Move
+G1 X83.9399 Y76.3319 E0.78203 F1800 ; Fill
+G0 X84.656 Y76.3319 F7200 ; Move
+G1 X73.9344 Y87.0535 E0.78203 F1800 ; Fill
+G0 X74.6505 Y87.0535 F7200 ; Move
+G1 X85.3721 Y76.3319 E0.78203 F1800 ; Fill
+G0 X86.0882 Y76.3319 F7200 ; Move
+G1 X75.3666 Y87.0535 E0.78203 F1800 ; Fill
+G0 X76.0827 Y87.0535 F7200 ; Move
+G1 X86.8043 Y76.3319 E0.78203 F1800 ; Fill
+G0 X87.2066 Y76.6457 F7200 ; Move
+G1 X76.7988 Y87.0535 E0.75914 F1800 ; Fill
+G0 X77.5149 Y87.0535 F7200 ; Move
+G1 X87.2066 Y77.3618 E0.70691 F1800 ; Fill
+G0 X87.2066 Y78.0779 F7200 ; Move
+G1 X78.2309 Y87.0535 E0.65468 F1800 ; Fill
+G0 X78.947 Y87.0535 F7200 ; Move
+G1 X87.2066 Y78.794 E0.60245 F1800 ; Fill
+G0 X87.2066 Y79.5101 F7200 ; Move
+G1 X79.6631 Y87.0535 E0.55022 F1800 ; Fill
+G0 X80.3792 Y87.0535 F7200 ; Move
+G1 X87.2066 Y80.2262 E0.49799 F1800 ; Fill
+G0 X87.2066 Y80.9422 F7200 ; Move
+G1 X81.0953 Y87.0535 E0.44576 F1800 ; Fill
+G0 X81.8114 Y87.0535 F7200 ; Move
+G1 X87.2066 Y81.6583 E0.39353 F1800 ; Fill
+G0 X87.2066 Y82.3744 F7200 ; Move
+G1 X82.5275 Y87.0535 E0.34129 F1800 ; Fill
+G0 X83.2435 Y87.0535 F7200 ; Move
+G1 X87.2066 Y83.0905 E0.28906 F1800 ; Fill
+G0 X87.2066 Y83.8066 F7200 ; Move
+G1 X83.9596 Y87.0535 E0.23683 F1800 ; Fill
+G0 X84.6757 Y87.0535 F7200 ; Move
+G1 X87.2066 Y84.5227 E0.1846 F1800 ; Fill
+G0 X87.2066 Y85.2388 F7200 ; Move
+G1 X85.3918 Y87.0535 E0.13237 F1800 ; Fill
+G0 X86.1079 Y87.0535 F7200 ; Move
+G1 X87.2066 Y85.9548 E0.08014 F1800 ; Fill
+G0 X87.2066 Y86.6709 F7200 ; Move
+G1 X86.824 Y87.0535 E0.02791 F1800 ; Fill
+G0 Z0.25 F7200 ; Move to layer height
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X15.0356 Y33.3992 F7200 ; Move to pattern start
+
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance
+M117 PA 0.015
+G1 X34.3564 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X15.0356 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X15.6113 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X34.9321 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X15.6113 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X16.187 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.5078 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X16.187 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X18.637 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.016 ; Set pressure advance
+M117 PA 0.016
+G1 X37.9578 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X18.637 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X19.2127 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X38.5335 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X19.2127 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X19.7884 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X39.1092 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X19.7884 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X22.2384 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.017 ; Set pressure advance
+M117 PA 0.017
+G1 X41.5592 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X22.2384 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X22.8141 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.1349 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X22.8141 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X23.3898 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.7106 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X23.3898 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X25.8398 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.018 ; Set pressure advance
+M117 PA 0.018
+G1 X45.1606 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X25.8398 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X26.4155 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X45.7363 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X26.4155 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X26.9912 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X46.312 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X26.9912 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X29.4412 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.019 ; Set pressure advance
+M117 PA 0.019
+G1 X48.762 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X29.4412 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X30.0169 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.3377 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X30.0169 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X30.5926 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.9134 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X30.5926 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X33.0426 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.02 ; Set pressure advance
+M117 PA 0.02
+G1 X52.3634 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X33.0426 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X33.6183 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X52.9391 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X33.6183 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X34.194 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X53.5148 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X34.194 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X36.644 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.021 ; Set pressure advance
+M117 PA 0.021
+G1 X55.9648 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X36.644 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X37.2197 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.5405 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X37.2197 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X37.7953 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X57.1162 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X37.7953 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X40.2453 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.022 ; Set pressure advance
+M117 PA 0.022
+G1 X59.5662 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X40.2453 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X40.821 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.1419 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X40.821 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X41.3967 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.7176 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X41.3967 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X43.8467 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.023 ; Set pressure advance
+M117 PA 0.023
+G1 X63.1676 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X43.8467 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X44.4224 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X63.7433 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X44.4224 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X44.9981 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.319 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X44.9981 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X47.4481 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.024 ; Set pressure advance
+M117 PA 0.024
+G1 X66.769 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X47.4481 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X48.0238 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.3447 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X48.0238 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X48.5995 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.9204 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X48.5995 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X51.0495 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.025 ; Set pressure advance
+M117 PA 0.025
+G1 X70.3704 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X51.0495 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X51.6252 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X70.9461 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X51.6252 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X52.2009 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.5218 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X52.2009 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X54.6509 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.026 ; Set pressure advance
+M117 PA 0.026
+G1 X73.9718 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X54.6509 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X55.2266 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X74.5474 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X55.2266 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X55.8023 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X75.1231 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X55.8023 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X58.2523 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.027 ; Set pressure advance
+M117 PA 0.027
+G1 X77.5731 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X58.2523 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X58.828 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.1488 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X58.828 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X59.4037 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.7245 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X59.4037 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X61.8537 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.028 ; Set pressure advance
+M117 PA 0.028
+G1 X81.1745 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X61.8537 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X62.4294 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X81.7502 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X62.4294 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X63.0051 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X82.3259 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X63.0051 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X65.4551 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.029 ; Set pressure advance
+M117 PA 0.029
+G1 X84.7759 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X65.4551 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X66.0308 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.3516 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X66.0308 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X66.6065 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.9273 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X66.6065 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X69.0565 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.03 ; Set pressure advance
+M117 PA 0.03
+G1 X88.3773 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X69.0565 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X69.6322 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X88.953 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X69.6322 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X70.2079 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X89.5287 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X70.2079 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X72.6579 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.031 ; Set pressure advance
+M117 PA 0.031
+G1 X91.9787 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X72.6579 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X73.2336 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X92.5544 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X73.2336 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X73.8093 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X93.1301 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X73.8093 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X76.2593 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.032 ; Set pressure advance
+M117 PA 0.032
+G1 X95.5801 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X76.2593 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X76.835 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.1558 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X76.835 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X77.4107 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.7315 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X77.4107 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X79.8607 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.033 ; Set pressure advance
+M117 PA 0.033
+G1 X99.1815 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X79.8607 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X80.4364 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X99.7572 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X80.4364 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X81.0121 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X100.3329 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X81.0121 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X83.4621 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.034 ; Set pressure advance
+M117 PA 0.034
+G1 X102.7829 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X83.4621 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X84.0378 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.3586 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X84.0378 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X84.6135 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.9343 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X84.6135 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X87.0635 Y33.3992 F7200 ; Move to next pattern
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.035 ; Set pressure advance
+M117 PA 0.035
+G1 X106.3843 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X87.0635 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X87.6392 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X106.96 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X87.6392 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X88.2149 Y33.3992 F7200 ; Move to start next pattern wall
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X107.5357 Y52.72 E1.10311 F1800 ; Print pattern wall
+G1 X88.2149 Y72.0408 E1.10311 F1800 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.35 F7200 ; Z hop
+G0 X15.0356 Y33.3992 F7200 ; Move back to start position
+G1 Z0.25 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+M106 S77 ; Set fan speed
+G0 Z0.45 F7200 ; Move to layer height
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance to start value for numbering
+M117 PA 0.015
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X11.7189 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X13.7189 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X15.7189 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X15.7189 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X13.7189 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X11.7189 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X11.7189 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X15.7189 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X14.9689 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X11.7189 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X13.7189 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X15.7189 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X15.7189 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X13.7189 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X11.7189 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X11.7189 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X11.7189 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X13.7189 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G1 X15.7189 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X11.7189 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X11.7189 Y83.3832 E0.06634 F1800 ; Glyph: 5
+G1 X13.7189 Y83.3832 E0.06634 F1800 ; Glyph: 5
+G1 X13.7189 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X15.7189 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X15.7189 Y83.3832 E0.06634 F1800 ; Glyph: 5
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X18.9217 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X20.9217 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X22.9217 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X22.9217 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X20.9217 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X18.9217 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X18.9217 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X22.9217 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X22.1717 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X18.9217 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X20.9217 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X22.9217 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X22.9217 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X20.9217 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X18.9217 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X18.9217 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X18.9217 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X20.9217 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G1 X22.9217 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X18.9217 Y83.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X18.9217 Y85.3832 E0.06634 F1800 ; Glyph: 7
+G1 X20.9217 Y85.3832 E0.06634 F1800 ; Glyph: 7
+G1 X22.9217 Y85.3832 E0.06634 F1800 ; Glyph: 7
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X26.1245 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X28.1245 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X30.1245 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X30.1245 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X28.1245 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X26.1245 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X26.1245 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X30.1245 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X29.3745 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X26.1245 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X28.1245 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X30.1245 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X30.1245 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X28.1245 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X26.1245 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X26.1245 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X26.1245 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X28.1245 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G1 X30.1245 Y82.3832 E0.06634 F1800 ; Glyph: 1
+G0 X30.1245 Y83.3832 F7200 ; Move
+G1 X30.1245 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 X28.1245 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 X26.1245 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 X26.1245 Y83.3832 E0.06634 F1800 ; Glyph: 9
+G1 X28.1245 Y83.3832 E0.06634 F1800 ; Glyph: 9
+G1 X28.1245 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X33.3273 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.3273 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X37.3273 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X37.3273 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X35.3273 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X33.3273 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X33.3273 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X37.3273 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X36.5773 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X33.3273 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.3273 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X37.3273 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X37.3273 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X35.3273 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X33.3273 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X33.3273 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X33.3273 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X33.3273 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X35.3273 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X35.3273 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X37.3273 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X37.3273 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X33.3273 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.3273 Y85.3832 E0.06634 F1800 ; Glyph: 1
+G1 X37.3273 Y85.3832 E0.06634 F1800 ; Glyph: 1
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X40.5301 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.5301 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X44.5301 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X44.5301 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X42.5301 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X40.5301 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X40.5301 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X44.5301 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X43.7801 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X40.5301 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.5301 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X44.5301 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X44.5301 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X42.5301 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X40.5301 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X40.5301 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X40.5301 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X40.5301 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X42.5301 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X42.5301 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X44.5301 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X44.5301 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X40.5301 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X40.5301 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X42.5301 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X42.5301 Y85.3832 E0.06634 F1800 ; Glyph: 3
+G0 X42.5301 Y87.3832 F7200 ; Move
+G1 X44.5301 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X44.5301 Y85.3832 E0.06634 F1800 ; Glyph: 3
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X47.7329 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.7329 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X51.7329 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X51.7329 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X49.7329 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X47.7329 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X47.7329 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X51.7329 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X50.9829 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X47.7329 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.7329 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X51.7329 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X51.7329 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X49.7329 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X47.7329 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X47.7329 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X47.7329 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X47.7329 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X49.7329 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X49.7329 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X51.7329 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X51.7329 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X47.7329 Y87.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X47.7329 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X49.7329 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X49.7329 Y87.3832 E0.06634 F1800 ; Glyph: 5
+G1 X51.7329 Y87.3832 E0.06634 F1800 ; Glyph: 5
+G1 X51.7329 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X54.9356 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.9356 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X58.9356 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X58.9356 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X56.9356 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X54.9356 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X54.9356 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X58.9356 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X58.1856 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X54.9356 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.9356 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X58.9356 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X58.9356 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X56.9356 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X54.9356 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X54.9356 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X54.9356 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X54.9356 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X56.9356 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X56.9356 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X58.9356 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X58.9356 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X54.9356 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X54.9356 Y87.3832 E0.06634 F1800 ; Glyph: 7
+G1 X56.9356 Y87.3832 E0.06634 F1800 ; Glyph: 7
+G1 X58.9356 Y87.3832 E0.06634 F1800 ; Glyph: 7
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X62.1384 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.1384 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X66.1384 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X66.1384 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X64.1384 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X62.1384 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X62.1384 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X66.1384 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X65.3884 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X62.1384 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.1384 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X66.1384 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X66.1384 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X64.1384 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X62.1384 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X62.1384 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X62.1384 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X62.1384 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X64.1384 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G1 X64.1384 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X66.1384 Y82.3832 E0.06634 F1800 ; Glyph: 2
+G1 X66.1384 Y84.3832 E0.06634 F1800 ; Glyph: 2
+G0 X66.1384 Y85.3832 F7200 ; Move
+G1 X66.1384 Y87.3832 E0.06634 F1800 ; Glyph: 9
+G1 X64.1384 Y87.3832 E0.06634 F1800 ; Glyph: 9
+G1 X62.1384 Y87.3832 E0.06634 F1800 ; Glyph: 9
+G1 X62.1384 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 X64.1384 Y85.3832 E0.06634 F1800 ; Glyph: 9
+G1 X64.1384 Y87.3832 E0.06634 F1800 ; Glyph: 9
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X69.3412 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.3412 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X73.3412 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X73.3412 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X71.3412 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X69.3412 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X69.3412 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X73.3412 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X72.5912 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X69.3412 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.3412 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X73.3412 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X73.3412 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X71.3412 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X69.3412 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X69.3412 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X69.3412 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X69.3412 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X71.3412 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X71.3412 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G0 X71.3412 Y84.3832 F7200 ; Move
+G1 X73.3412 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X73.3412 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X69.3412 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.3412 Y85.3832 E0.06634 F1800 ; Glyph: 1
+G1 X73.3412 Y85.3832 E0.06634 F1800 ; Glyph: 1
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X76.544 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.544 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X80.544 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X80.544 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X78.544 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X76.544 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X76.544 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X80.544 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X79.794 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X76.544 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.544 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X80.544 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X80.544 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X78.544 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X76.544 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X76.544 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X76.544 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X76.544 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X78.544 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X78.544 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G0 X78.544 Y84.3832 F7200 ; Move
+G1 X80.544 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X80.544 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X76.544 Y85.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X76.544 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X78.544 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X78.544 Y85.3832 E0.06634 F1800 ; Glyph: 3
+G0 X78.544 Y87.3832 F7200 ; Move
+G1 X80.544 Y87.3832 E0.06634 F1800 ; Glyph: 3
+G1 X80.544 Y85.3832 E0.06634 F1800 ; Glyph: 3
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X83.7468 Y75.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.7468 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X87.7468 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 X87.7468 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X85.7468 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X83.7468 Y77.3832 E0.06634 F1800 ; Glyph: 0
+G1 X83.7468 Y75.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X87.7468 Y78.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X86.9968 Y78.3832 E0.02488 F1800 ; Glyph: .
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X83.7468 Y79.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.7468 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X87.7468 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 X87.7468 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X85.7468 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X83.7468 Y81.3832 E0.06634 F1800 ; Glyph: 0
+G1 X83.7468 Y79.3832 E0.06634 F1800 ; Glyph: 0
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X83.7468 Y82.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X83.7468 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X85.7468 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X85.7468 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G0 X85.7468 Y84.3832 F7200 ; Move
+G1 X87.7468 Y84.3832 E0.06634 F1800 ; Glyph: 3
+G1 X87.7468 Y82.3832 E0.06634 F1800 ; Glyph: 3
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X83.7468 Y87.3832 F7200 ; Move
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X83.7468 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X85.7468 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 X85.7468 Y87.3832 E0.06634 F1800 ; Glyph: 5
+G1 X87.7468 Y87.3832 E0.06634 F1800 ; Glyph: 5
+G1 X87.7468 Y85.3832 E0.06634 F1800 ; Glyph: 5
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X13.1432 Y31.5068 F7200 ; Move to pattern start
+
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance
+M117 PA 0.015
+G1 X34.3564 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.1432 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X13.7189 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X34.9321 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.7189 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X14.2946 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.5078 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X14.2946 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X16.7446 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.016 ; Set pressure advance
+M117 PA 0.016
+G1 X37.9578 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X16.7446 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X17.3203 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X38.5335 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.3203 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X17.896 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X39.1092 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.896 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X20.346 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.017 ; Set pressure advance
+M117 PA 0.017
+G1 X41.5592 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.346 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X20.9217 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.1349 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.9217 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X21.4974 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.7106 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X21.4974 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X23.9474 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.018 ; Set pressure advance
+M117 PA 0.018
+G1 X45.1606 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X23.9474 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X24.5231 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X45.7363 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X24.5231 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X25.0988 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X46.312 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X25.0988 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X27.5488 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.019 ; Set pressure advance
+M117 PA 0.019
+G1 X48.762 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X27.5488 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X28.1245 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.3377 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.1245 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X28.7002 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.9134 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.7002 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X31.1502 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.02 ; Set pressure advance
+M117 PA 0.02
+G1 X52.3634 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.1502 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X31.7259 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X52.9391 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.7259 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X32.3016 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X53.5148 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X32.3016 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X34.7516 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.021 ; Set pressure advance
+M117 PA 0.021
+G1 X55.9648 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X34.7516 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X35.3273 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.5405 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.3273 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X35.903 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X57.1162 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.903 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X38.353 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.022 ; Set pressure advance
+M117 PA 0.022
+G1 X59.5662 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.353 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X38.9287 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.1419 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.9287 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X39.5044 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.7176 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X39.5044 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X41.9544 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.023 ; Set pressure advance
+M117 PA 0.023
+G1 X63.1676 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X41.9544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X42.5301 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X63.7433 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X42.5301 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X43.1058 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.319 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X43.1058 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X45.5558 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.024 ; Set pressure advance
+M117 PA 0.024
+G1 X66.769 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X45.5558 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X46.1315 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.3447 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.1315 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X46.7072 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.9204 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.7072 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X49.1572 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.025 ; Set pressure advance
+M117 PA 0.025
+G1 X70.3704 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.1572 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X49.7329 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X70.9461 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.7329 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X50.3085 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.5218 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X50.3085 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X52.7585 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.026 ; Set pressure advance
+M117 PA 0.026
+G1 X73.9718 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X52.7585 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X53.3342 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X74.5474 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.3342 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X53.9099 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X75.1231 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.9099 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X56.3599 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.027 ; Set pressure advance
+M117 PA 0.027
+G1 X77.5731 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.3599 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X56.9356 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.1488 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.9356 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X57.5113 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.7245 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X57.5113 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X59.9613 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.028 ; Set pressure advance
+M117 PA 0.028
+G1 X81.1745 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X59.9613 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X60.537 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X81.7502 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X60.537 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X61.1127 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X82.3259 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X61.1127 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X63.5627 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.029 ; Set pressure advance
+M117 PA 0.029
+G1 X84.7759 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X63.5627 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X64.1384 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.3516 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.1384 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X64.7141 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.9273 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.7141 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X67.1641 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.03 ; Set pressure advance
+M117 PA 0.03
+G1 X88.3773 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.1641 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X67.7398 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X88.953 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.7398 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X68.3155 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X89.5287 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X68.3155 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X70.7655 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.031 ; Set pressure advance
+M117 PA 0.031
+G1 X91.9787 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X70.7655 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X71.3412 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X92.5544 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.3412 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X71.9169 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X93.1301 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.9169 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X74.3669 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.032 ; Set pressure advance
+M117 PA 0.032
+G1 X95.5801 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.3669 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X74.9426 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.1558 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.9426 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X75.5183 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.7315 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X75.5183 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X77.9683 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.033 ; Set pressure advance
+M117 PA 0.033
+G1 X99.1815 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X77.9683 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X78.544 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X99.7572 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X78.544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X79.1197 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X100.3329 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X79.1197 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X81.5697 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.034 ; Set pressure advance
+M117 PA 0.034
+G1 X102.7829 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X81.5697 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X82.1454 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.3586 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.1454 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X82.7211 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.9343 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.7211 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X85.1711 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.035 ; Set pressure advance
+M117 PA 0.035
+G1 X106.3843 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.1711 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X85.7468 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X106.96 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.7468 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X86.3225 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X107.5357 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X86.3225 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.55 F7200 ; Z hop
+G0 X13.1432 Y31.5068 F7200 ; Move back to start position
+G1 Z0.45 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G0 Z0.65 F7200 ; Move to layer height
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance
+M117 PA 0.015
+G1 X34.3564 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.1432 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X13.7189 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X34.9321 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.7189 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X14.2946 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.5078 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X14.2946 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X16.7446 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.016 ; Set pressure advance
+M117 PA 0.016
+G1 X37.9578 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X16.7446 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X17.3203 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X38.5335 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.3203 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X17.896 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X39.1092 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.896 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X20.346 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.017 ; Set pressure advance
+M117 PA 0.017
+G1 X41.5592 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.346 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X20.9217 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.1349 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.9217 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X21.4974 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.7106 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X21.4974 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X23.9474 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.018 ; Set pressure advance
+M117 PA 0.018
+G1 X45.1606 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X23.9474 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X24.5231 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X45.7363 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X24.5231 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X25.0988 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X46.312 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X25.0988 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X27.5488 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.019 ; Set pressure advance
+M117 PA 0.019
+G1 X48.762 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X27.5488 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X28.1245 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.3377 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.1245 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X28.7002 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.9134 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.7002 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X31.1502 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.02 ; Set pressure advance
+M117 PA 0.02
+G1 X52.3634 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.1502 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X31.7259 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X52.9391 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.7259 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X32.3016 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X53.5148 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X32.3016 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X34.7516 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.021 ; Set pressure advance
+M117 PA 0.021
+G1 X55.9648 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X34.7516 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X35.3273 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.5405 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.3273 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X35.903 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X57.1162 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.903 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X38.353 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.022 ; Set pressure advance
+M117 PA 0.022
+G1 X59.5662 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.353 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X38.9287 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.1419 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.9287 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X39.5044 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.7176 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X39.5044 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X41.9544 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.023 ; Set pressure advance
+M117 PA 0.023
+G1 X63.1676 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X41.9544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X42.5301 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X63.7433 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X42.5301 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X43.1058 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.319 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X43.1058 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X45.5558 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.024 ; Set pressure advance
+M117 PA 0.024
+G1 X66.769 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X45.5558 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X46.1315 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.3447 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.1315 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X46.7072 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.9204 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.7072 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X49.1572 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.025 ; Set pressure advance
+M117 PA 0.025
+G1 X70.3704 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.1572 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X49.7329 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X70.9461 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.7329 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X50.3085 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.5218 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X50.3085 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X52.7585 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.026 ; Set pressure advance
+M117 PA 0.026
+G1 X73.9718 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X52.7585 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X53.3342 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X74.5474 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.3342 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X53.9099 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X75.1231 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.9099 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X56.3599 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.027 ; Set pressure advance
+M117 PA 0.027
+G1 X77.5731 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.3599 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X56.9356 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.1488 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.9356 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X57.5113 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.7245 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X57.5113 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X59.9613 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.028 ; Set pressure advance
+M117 PA 0.028
+G1 X81.1745 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X59.9613 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X60.537 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X81.7502 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X60.537 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X61.1127 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X82.3259 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X61.1127 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X63.5627 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.029 ; Set pressure advance
+M117 PA 0.029
+G1 X84.7759 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X63.5627 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X64.1384 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.3516 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.1384 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X64.7141 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.9273 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.7141 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X67.1641 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.03 ; Set pressure advance
+M117 PA 0.03
+G1 X88.3773 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.1641 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X67.7398 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X88.953 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.7398 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X68.3155 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X89.5287 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X68.3155 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X70.7655 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.031 ; Set pressure advance
+M117 PA 0.031
+G1 X91.9787 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X70.7655 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X71.3412 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X92.5544 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.3412 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X71.9169 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X93.1301 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.9169 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X74.3669 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.032 ; Set pressure advance
+M117 PA 0.032
+G1 X95.5801 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.3669 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X74.9426 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.1558 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.9426 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X75.5183 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.7315 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X75.5183 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X77.9683 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.033 ; Set pressure advance
+M117 PA 0.033
+G1 X99.1815 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X77.9683 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X78.544 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X99.7572 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X78.544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X79.1197 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X100.3329 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X79.1197 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X81.5697 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.034 ; Set pressure advance
+M117 PA 0.034
+G1 X102.7829 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X81.5697 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X82.1454 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.3586 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.1454 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X82.7211 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.9343 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.7211 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X85.1711 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.035 ; Set pressure advance
+M117 PA 0.035
+G1 X106.3843 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.1711 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X85.7468 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X106.96 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.7468 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X86.3225 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X107.5357 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X86.3225 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.75 F7200 ; Z hop
+G0 X13.1432 Y31.5068 F7200 ; Move back to start position
+G1 Z0.65 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G0 Z0.85 F7200 ; Move to layer height
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance
+M117 PA 0.015
+G1 X34.3564 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.1432 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X13.7189 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X34.9321 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X13.7189 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X14.2946 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X35.5078 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X14.2946 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X16.7446 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.016 ; Set pressure advance
+M117 PA 0.016
+G1 X37.9578 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X16.7446 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X17.3203 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X38.5335 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.3203 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X17.896 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X39.1092 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X17.896 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X20.346 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.017 ; Set pressure advance
+M117 PA 0.017
+G1 X41.5592 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.346 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X20.9217 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.1349 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X20.9217 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X21.4974 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X42.7106 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X21.4974 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X23.9474 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.018 ; Set pressure advance
+M117 PA 0.018
+G1 X45.1606 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X23.9474 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X24.5231 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X45.7363 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X24.5231 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X25.0988 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X46.312 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X25.0988 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X27.5488 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.019 ; Set pressure advance
+M117 PA 0.019
+G1 X48.762 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X27.5488 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X28.1245 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.3377 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.1245 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X28.7002 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X49.9134 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X28.7002 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X31.1502 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.02 ; Set pressure advance
+M117 PA 0.02
+G1 X52.3634 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.1502 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X31.7259 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X52.9391 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X31.7259 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X32.3016 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X53.5148 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X32.3016 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X34.7516 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.021 ; Set pressure advance
+M117 PA 0.021
+G1 X55.9648 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X34.7516 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X35.3273 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X56.5405 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.3273 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X35.903 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X57.1162 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X35.903 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X38.353 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.022 ; Set pressure advance
+M117 PA 0.022
+G1 X59.5662 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.353 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X38.9287 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.1419 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X38.9287 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X39.5044 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X60.7176 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X39.5044 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X41.9544 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.023 ; Set pressure advance
+M117 PA 0.023
+G1 X63.1676 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X41.9544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X42.5301 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X63.7433 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X42.5301 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X43.1058 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X64.319 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X43.1058 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X45.5558 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.024 ; Set pressure advance
+M117 PA 0.024
+G1 X66.769 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X45.5558 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X46.1315 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.3447 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.1315 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X46.7072 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X67.9204 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X46.7072 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X49.1572 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.025 ; Set pressure advance
+M117 PA 0.025
+G1 X70.3704 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.1572 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X49.7329 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X70.9461 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X49.7329 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X50.3085 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X71.5218 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X50.3085 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X52.7585 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.026 ; Set pressure advance
+M117 PA 0.026
+G1 X73.9718 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X52.7585 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X53.3342 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X74.5474 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.3342 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X53.9099 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X75.1231 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X53.9099 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X56.3599 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.027 ; Set pressure advance
+M117 PA 0.027
+G1 X77.5731 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.3599 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X56.9356 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.1488 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X56.9356 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X57.5113 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X78.7245 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X57.5113 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X59.9613 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.028 ; Set pressure advance
+M117 PA 0.028
+G1 X81.1745 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X59.9613 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X60.537 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X81.7502 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X60.537 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X61.1127 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X82.3259 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X61.1127 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X63.5627 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.029 ; Set pressure advance
+M117 PA 0.029
+G1 X84.7759 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X63.5627 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X64.1384 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.3516 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.1384 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X64.7141 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X85.9273 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X64.7141 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X67.1641 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.03 ; Set pressure advance
+M117 PA 0.03
+G1 X88.3773 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.1641 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X67.7398 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X88.953 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X67.7398 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X68.3155 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X89.5287 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X68.3155 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X70.7655 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.031 ; Set pressure advance
+M117 PA 0.031
+G1 X91.9787 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X70.7655 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X71.3412 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X92.5544 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.3412 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X71.9169 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X93.1301 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X71.9169 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X74.3669 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.032 ; Set pressure advance
+M117 PA 0.032
+G1 X95.5801 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.3669 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X74.9426 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.1558 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X74.9426 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X75.5183 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X96.7315 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X75.5183 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X77.9683 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.033 ; Set pressure advance
+M117 PA 0.033
+G1 X99.1815 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X77.9683 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X78.544 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X99.7572 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X78.544 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X79.1197 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X100.3329 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X79.1197 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X81.5697 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.034 ; Set pressure advance
+M117 PA 0.034
+G1 X102.7829 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X81.5697 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X82.1454 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.3586 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.1454 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X82.7211 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X103.9343 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X82.7211 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X85.1711 Y31.5068 F7200 ; Move to next pattern
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+SET_PRESSURE_ADVANCE ADVANCE=0.035 ; Set pressure advance
+M117 PA 0.035
+G1 X106.3843 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.1711 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X85.7468 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X106.96 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X85.7468 Y73.9332 E0.99515 F6000 ; Print pattern wall
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 X86.3225 Y31.5068 F7200 ; Move to start next pattern wall
+G1 Z0.85 F7200 ; Z hop return
+G1 E0.2 F1800 ; Un-retract
+G1 X107.5357 Y52.72 E0.99515 F6000 ; Print pattern wall
+G1 X86.3225 Y73.9332 E0.99515 F6000 ; Print pattern wall
+SET_PRESSURE_ADVANCE ADVANCE=0.015 ; Set pressure advance back to start value
+M117 PA 0.015
+G1 E-0.2 F2100 ; Retract
+G1 Z0.95 F7200 ; Z hop
+G0 Z5.85 F7200 ; Z raise
+M104 S0 ; Turn off hotend
+M140 S0 ; Turn off bed
+M107    ; Turn off fan
+;
+; End G-code
+;
+PRINT_END ; End macro. Change name to match yours
+;
+; FINISH
+;
