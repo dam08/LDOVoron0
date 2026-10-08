@@ -17,3 +17,5 @@
 - [First Layer Calibration](https://www.printables.com/model/293606-voron-v0-v01-v02-first-layer-calibration)
 - [Picobillical Dragon Burner Mount](https://www.printables.com/model/479584-voron-v0-picobillical-dragon-burner-mount)
 - [Voron V0 Modesty Mesh With Built-In Hex](https://www.printables.com/model/1053707-voron-v0-modesty-mesh-with-built-in-hex)
+- [Belt tensionner gantry - Tulip](https://github.com/Amekyras/tulip)
+- [Raspberry Pi camera mount](https://www.printables.com/model/370373-voron-01-voron-02-raspberry-pi-camera-module-3-mou)
