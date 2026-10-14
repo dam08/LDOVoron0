@@ -10,6 +10,7 @@
 - [Nevermore Micro](https://github.com/nevermore3d/Nevermore_Micro)
 - [FilterVzero active carbon filter](https://www.printables.com/model/809509-filtervzero-active-carbon-filter-for-voron-v0)
 - [ZeroFilter](https://github.com/zruncho3d/zerofilter)
+- [klipper-filter-monitor](https://github.com/blankhaus/klipper-filter_monitor)
 
 # Belt
 - [GT2 Belt Tension Meter](https://github.com/Diyshift/3D-Printer/tree/main/GT2%20Belt%20Tension%20Meter)
